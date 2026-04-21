@@ -6,7 +6,7 @@
     <title>Peta Sumber Gempa Indonesia</title>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -145,12 +145,84 @@
             padding-left: 10px;
         }
 
+        /* Coordinates Display */
+        .mouse-coords {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 2px 10px;
+            pointer-events: none;
+            border-top-left-radius: 4px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Context Menu Style */
+        .context-menu {
+            position: absolute;
+            z-index: 2000;
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            padding: 4px 0;
+            min-width: 180px;
+            display: none;
+        }
+        .context-menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+        .context-menu-item:hover {
+            background: #334155;
+            color: #60a5fa;
+        }
+        .context-menu-label {
+            font-size: 11px;
+            color: #94a3b8;
+            padding: 4px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
         /* Control Layers */
         .leaflet-control-layers {
             background: var(--card-bg) !important;
             color: var(--text) !important;
             border-radius: 8px !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3000;
+            background: #10b981;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
         }
 
         /* Loader */
@@ -187,6 +259,19 @@
 
     <div id="map"></div>
 
+    <div id="mouse-coords" class="mouse-coords">
+        Lat: 0.00000 | Lng: 0.00000
+    </div>
+
+    <div id="context-menu" class="context-menu">
+        <div id="context-coords-label" class="context-menu-label">0.00, 0.00</div>
+        <div class="context-menu-item" onclick="copyCoords()">
+            <span>📋</span> Salin koordinat
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Koordinat berhasil disalin!</div>
+
     <div class="legend">
         <div class="legend-item">
             <div class="legend-color color-sesar"></div>
@@ -202,6 +287,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <script>
+        // Global variables for features
+        let currentCoords = null;
+        const coordsEl = document.getElementById('mouse-coords');
+        const ctxMenu = document.getElementById('context-menu');
+        const ctxLabel = document.getElementById('context-coords-label');
+        const toast = document.getElementById('toast');
+
         // Basemaps
         const googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
             attribution: '&copy; Google Maps',
@@ -220,11 +312,13 @@
             attribution: '&copy; OpenStreetMap contributors'
         });
 
-        // Initialize Map with Google Satellite as default
+        // Initialize Map
         const map = L.map('map', {
             center: [-2.5, 118],
             zoom: 5,
-            layers: [googleSat]
+            layers: [googleSat],
+            contextmenu: true, // Marker for our logic
+            attributionControl: true
         });
 
         const baseMaps = {
@@ -237,7 +331,50 @@
         const overlayMaps = {};
         const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-        // Styling functions
+        // --- Feature: Mouse Position ---
+        map.on('mousemove', (e) => {
+            const { lat, lng } = e.latlng;
+            coordsEl.innerHTML = `Lat: ${lat.toFixed(5)} | Lng: ${lng.toFixed(5)}`;
+        });
+
+        // --- Feature: Context Menu (Right Click) ---
+        map.on('contextmenu', (e) => {
+            currentCoords = e.latlng;
+            const { lat, lng } = currentCoords;
+            const roundedLat = lat.toFixed(6);
+            const roundedLng = lng.toFixed(6);
+            
+            ctxLabel.innerText = `${roundedLat}, ${roundedLng}`;
+            
+            ctxMenu.style.display = 'block';
+            ctxMenu.style.left = `${e.containerPoint.x}px`;
+            ctxMenu.style.top = `${e.containerPoint.y}px`;
+        });
+
+        // Hide context menu on map click or move
+        map.on('click dragstart zoomstart', () => {
+            ctxMenu.style.display = 'none';
+        });
+
+        // Function to copy coordinates
+        window.copyCoords = function() {
+            if (!currentCoords) return;
+            const text = `${currentCoords.lat.toFixed(6)}, ${currentCoords.lng.toFixed(6)}`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                ctxMenu.style.display = 'none';
+                showToast();
+            });
+        };
+
+        function showToast() {
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2000);
+        }
+
+        // --- Styling functions ---
         const sesarStyle = { color: "#ef4444", weight: 3, opacity: 0.8 };
         const subduksiStyle = { color: "#3b82f6", weight: 4, opacity: 0.9 };
 
@@ -251,7 +388,6 @@
             const p = feature.properties;
             let rows = '';
             
-            // Define fields to show based on source
             const fields = p.trenchname ? 
                 [['Trench Name', p.trenchname], ['Remarks', p.remarks]] :
                 [['Name', p.name], ['Segment', p.segment], ['Region', p.region], ['Type', p.type], ['Sliprate (m)', p.sliprate_m], ['Length (km)', p.length_km], ['Mmax', p.mmax]];
@@ -280,7 +416,6 @@
                 className: 'line-label'
             });
 
-            // Detailed Popup
             layer.bindPopup(createPopup(feature));
             
             layer.on({
