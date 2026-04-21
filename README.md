@@ -2,6 +2,8 @@
 
 Aplikas berbasis Django dan Leaflet.js untuk menampilkan data sesar aktif dan subduksi dari PusGeN 2024.
 
+Repository: [https://github.com/ftharyanto/Peta-Sumber-Gempa](https://github.com/ftharyanto/Peta-Sumber-Gempa)
+
 ## Fitur
 - Visualisasi garis sesar (Shallow Crustal) dan subduksi.
 - Interaktif: Klik pada garis untuk melihat nama sumber gempa.
@@ -20,13 +22,13 @@ Aplikas berbasis Django dan Leaflet.js untuk menampilkan data sesar aktif dan su
 
 Jika image sudah di-upload ke GHCR, Anda bisa menjalankannya langsung tanpa membangun dari source:
 
-1. Pull image terbaru (ganti `<username>` dan `<repository>` sesuai akun GitHub Anda):
+1. Pull image terbaru:
    ```bash
-   docker pull ghcr.io/<username>/<repository>:latest
+   docker pull ghcr.io/ftharyanto/peta-sumber-gempa:latest
    ```
 2. Jalankan kontainer pada port 9004:
    ```bash
-   docker run -d -p 9004:8000 --name fault-map ghcr.io/<username>/<repository>:latest
+   docker run -d -p 9004:8000 --name fault-map ghcr.io/ftharyanto/peta-sumber-gempa:latest
    ```
 
 ## Struktur Data
