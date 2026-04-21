@@ -31,9 +31,25 @@ Jika image sudah di-upload ke GHCR, Anda bisa menjalankannya langsung tanpa memb
    docker run -d -p 9004:8000 --name fault-map ghcr.io/ftharyanto/peta-sumber-gempa:latest
    ```
 
-## Struktur Data
-- **Sesar**: Atribut `Name` (diambil dari `PusGeN2024_Shallow_Crustal_v5_12.shp`).
-- **Subduksi**: Atribut `TrenchName` (diambil dari `2024_Subduction trench_v2.shp`).
+## Cara Update (Repull) Image
+
+Jika ada pembaruan pada repositori, gunakan langkah berikut untuk memperbarui image lokal Anda:
+
+1. Stop dan hapus kontainer yang sedang berjalan:
+   ```bash
+   docker stop fault-map
+   docker rm fault-map
+   ```
+2. Pull image terbaru dari GHCR:
+   ```bash
+   docker pull ghcr.io/ftharyanto/peta-sumber-gempa:latest
+   ```
+3. Jalankan kembali kontainer:
+   ```bash
+   docker run -d -p 9004:8000 --name fault-map ghcr.io/ftharyanto/peta-sumber-gempa:latest
+   ```
+## Sumber Data
+- **PusGeN 2024**: [https://ciptakarya.pu.go.id/produk-kegempaan](Pusat Studi Gempa Nasional 2024)
 
 ## Tech Stack
 - **Backend**: Django & `pyshp`
