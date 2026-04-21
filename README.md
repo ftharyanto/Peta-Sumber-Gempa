@@ -35,17 +35,13 @@ Jika image sudah di-upload ke GHCR, Anda bisa menjalankannya langsung tanpa memb
 
 Jika ada pembaruan pada repositori, gunakan langkah berikut untuk memperbarui image lokal Anda:
 
-1. Stop dan hapus kontainer yang sedang berjalan:
    ```bash
+# Stop dan hapus kontainer yang sedang berjalan:
    docker stop fault-map
    docker rm fault-map
-   ```
-2. Pull image terbaru dari GHCR:
-   ```bash
+# Pull image terbaru dari GHCR:
    docker pull ghcr.io/ftharyanto/peta-sumber-gempa:latest
-   ```
-3. Jalankan kembali kontainer:
-   ```bash
+# Jalankan kembali kontainer:
    docker run -d -p 9004:8000 --name fault-map ghcr.io/ftharyanto/peta-sumber-gempa:latest
    ```
 ## Sumber Data
