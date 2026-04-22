@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peta Sumber Gempa Indonesia</title>
+    <title>Peta Sumber Gempa Indonesia 2024</title>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
@@ -317,7 +317,6 @@
             center: [-2.5, 118],
             zoom: 5,
             layers: [googleSat],
-            contextmenu: true, // Marker for our logic
             attributionControl: true
         });
 
@@ -361,7 +360,7 @@
             if (!currentCoords) return;
             const text = `${currentCoords.lat.toFixed(6)}, ${currentCoords.lng.toFixed(6)}`;
             
-            // Standard Clipboard API (requires HTTPS or localhost)
+            // Standard Clipboard API
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(text).then(() => {
                     ctxMenu.style.display = 'none';
@@ -389,8 +388,6 @@
                 if (successful) {
                     ctxMenu.style.display = 'none';
                     showToast();
-                } else {
-                    console.error('Fallback copy was unsuccessful');
                 }
             } catch (err) {
                 console.error('Fallback copy failed:', err);
@@ -440,7 +437,6 @@
         }
 
         function onEachFeature(feature, layer) {
-            // Permanent Label
             layer.bindTooltip(feature.properties.display_name, {
                 permanent: true,
                 direction: 'center',
@@ -461,12 +457,12 @@
             });
         }
 
-        // Fetch Data
+        // Fetch Data from static files
         async function loadData() {
             try {
                 const [sesarRes, subduksiRes] = await Promise.all([
-                    fetch('/data/sesar/'),
-                    fetch('/data/subduksi/')
+                    fetch('data/sesar.json'),
+                    fetch('data/subduksi.json')
                 ]);
 
                 const sesarData = await sesarRes.json();
