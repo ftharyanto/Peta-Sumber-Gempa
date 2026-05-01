@@ -418,7 +418,7 @@
             
             const fields = p.trenchname ? 
                 [['Trench Name', p.trenchname], ['Remarks', p.remarks]] :
-                [['Name', p.name], ['Segment', p.segment], ['Region', p.region], ['Type', p.type], ['Sliprate (m)', p.sliprate_m], ['Length (km)', p.length_km], ['Mmax', p.mmax]];
+                [['Name', p.name], ['Segment', p.segment], ['Region', p.region], ['Type', p.type], ['Sliprate (mm/yr)', p.sliprate_m], ['Length (km)', p.length_km], ['Mmax (Mw)', p.mmax]];
 
             fields.forEach(([label, val]) => {
                 if (val !== undefined) {
