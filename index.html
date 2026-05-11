@@ -412,8 +412,17 @@
             return val;
         }
 
+        function getFormattedName(p) {
+            const name = p.name || p.trenchname || p.display_name || 'Unknown';
+            if (p.segment && p.segment !== '-') {
+                return `${name} (${p.segment})`;
+            }
+            return name;
+        }
+
         function createPopup(feature) {
             const p = feature.properties;
+            const displayName = getFormattedName(p);
             let rows = '';
             
             const fields = p.trenchname ? 
@@ -431,13 +440,14 @@
             });
 
             return `
-                <div class="popup-header">${p.display_name}</div>
+                <div class="popup-header">${displayName}</div>
                 <div class="popup-body">${rows}</div>
             `;
         }
 
         function onEachFeature(feature, layer) {
-            layer.bindTooltip(feature.properties.display_name, {
+            const displayName = getFormattedName(feature.properties);
+            layer.bindTooltip(displayName, {
                 permanent: true,
                 direction: 'center',
                 className: 'line-label'
