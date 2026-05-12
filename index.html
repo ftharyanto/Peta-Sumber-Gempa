@@ -48,6 +48,12 @@
             border-radius: 4px;
             white-space: nowrap;
             text-shadow: 0 0 3px black;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .labels-hidden .line-label {
+            display: none !important;
         }
 
         .header {
@@ -83,21 +89,62 @@
             z-index: 1000;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
-            padding: 16px;
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            width: 200px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .legend.collapsed {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+        }
+
+        .legend-header {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #60a5fa;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .legend-content {
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            transition: opacity 0.2s;
+        }
+
+        .legend.collapsed .legend-content, 
+        .legend.collapsed .legend-title-text {
+            display: none;
+        }
+
+        .legend.collapsed .legend-header {
+            padding: 0;
+            width: 44px;
+            height: 44px;
+            justify-content: center;
+            background: transparent;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
             margin-bottom: 8px;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
         }
 
         .legend-color {
-            width: 24px;
+            width: 20px;
             height: 4px;
             margin-right: 12px;
             border-radius: 2px;
@@ -105,6 +152,21 @@
 
         .color-sesar { background-color: #ef4444; }
         .color-subduksi { background-color: #3b82f6; }
+
+        .legend-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            margin: 12px 0 8px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 12px;
+        }
+        .legend-section-title:first-child {
+            margin-top: 0;
+            border-top: none;
+            padding-top: 0;
+        }
 
         /* Custom Popup Style */
         .leaflet-popup-content-wrapper {
@@ -245,6 +307,118 @@
             animation: spin 1s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        /* Tools Panel */
+        /* Tools Panel */
+        .tools-control {
+            position: absolute;
+            top: 80px; /* Below Layer Control */
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .tools-toggle {
+            width: 34px;
+            height: 34px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px; /* Matching the layer control radius */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+            color: white;
+            font-size: 18px;
+        }
+
+        .tools-toggle:hover {
+            background: #334155;
+        }
+
+        .tools-panel {
+            margin-top: 8px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            width: 240px;
+            display: none; /* Collapsed by default */
+            transform-origin: top right;
+            animation: slideIn 0.2s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .tools-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #60a5fa;
+            font-family: 'Outfit', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .input-group input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            box-sizing: border-box;
+        }
+        .btn-plot {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 5px;
+        }
+        .btn-plot:hover {
+            background: #3b82f6;
+        }
+
+        /* Depth Item Style */
+        .depth-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 0.75rem;
+        }
+        .depth-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -272,14 +446,55 @@
 
     <div id="toast" class="toast">Koordinat berhasil disalin!</div>
 
-    <div class="legend">
-        <div class="legend-item">
-            <div class="legend-color color-sesar"></div>
-            <span>Sesar aktif (Active Fault)</span>
+    <div class="tools-control">
+        <div class="tools-toggle" onclick="toggleTools()" title="Plot Titik">📍</div>
+        <div id="tools-panel" class="tools-panel">
+            <div class="tools-title">Plot Titik Koordinat</div>
+            <div class="input-group">
+                <label>Latitude</label>
+                <input type="number" id="input-lat" placeholder="-2.5" step="0.00001">
+            </div>
+            <div class="input-group">
+                <label>Longitude</label>
+                <input type="number" id="input-lng" placeholder="118.0" step="0.00001">
+            </div>
+            <button class="btn-plot" onclick="plotPoint()">Plot ke Peta</button>
         </div>
-        <div class="legend-item">
-            <div class="legend-color color-subduksi"></div>
-            <span>Subduksi (Subduction Trench)</span>
+    </div>
+
+    <div id="legend" class="legend">
+        <div class="legend-header" onclick="toggleLegend()">
+            <span class="legend-title-text">Legenda</span>
+            <span id="legend-icon">📊</span>
+        </div>
+        <div class="legend-content">
+            <div class="legend-section-title">Sumber Gempa</div>
+            <div class="legend-item">
+                <div class="legend-color color-sesar"></div>
+                <span>Sesar aktif (Active Fault)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color color-subduksi"></div>
+                <span>Subduksi (Subduction Trench)</span>
+            </div>
+
+            <div class="legend-section-title">Slab USGS Depth (km)</div>
+            <div class="depth-item">
+                <div class="depth-color" style="background: #ef4444;"></div>
+                <span>&lt; 100 km</span>
+            </div>
+            <div class="depth-item">
+                <div class="depth-color" style="background: #facc15;"></div>
+                <span>100 - 200 km</span>
+            </div>
+            <div class="depth-item">
+                <div class="depth-color" style="background: #4ade80;"></div>
+                <span>200 - 500 km</span>
+            </div>
+            <div class="depth-item">
+                <div class="depth-color" style="background: #3b82f6;"></div>
+                <span>&gt; 500 km</span>
+            </div>
         </div>
     </div>
 
@@ -289,6 +504,7 @@
     <script>
         // Global variables for features
         let currentCoords = null;
+        let plottedPoint = null;
         const coordsEl = document.getElementById('mouse-coords');
         const ctxMenu = document.getElementById('context-menu');
         const ctxLabel = document.getElementById('context-coords-label');
@@ -329,6 +545,21 @@
 
         const overlayMaps = {};
         const layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        // --- Feature: Label Toggle ---
+        const labelToggle = L.layerGroup().addTo(map);
+        layerControl.addOverlay(labelToggle, "Tampilkan Label");
+
+        map.on('overlayadd', function(e) {
+            if (e.name === "Tampilkan Label") {
+                document.getElementById('map').classList.remove('labels-hidden');
+            }
+        });
+        map.on('overlayremove', function(e) {
+            if (e.name === "Tampilkan Label") {
+                document.getElementById('map').classList.add('labels-hidden');
+            }
+        });
 
         // --- Feature: Mouse Position ---
         map.on('mousemove', (e) => {
@@ -395,16 +626,85 @@
             document.body.removeChild(textArea);
         }
 
-        function showToast() {
+        function showToast(message) {
+            if (message) toast.innerText = message;
+            else toast.innerText = "Koordinat berhasil disalin!";
+            
             toast.style.opacity = '1';
             setTimeout(() => {
                 toast.style.opacity = '0';
             }, 2000);
         }
 
+        // --- Feature: UI Toggles ---
+        window.toggleLegend = function() {
+            const legend = document.getElementById('legend');
+            const icon = document.getElementById('legend-icon');
+            legend.classList.toggle('collapsed');
+            icon.innerText = legend.classList.contains('collapsed') ? '📊' : '✖';
+        };
+
+        window.toggleTools = function() {
+            const panel = document.getElementById('tools-panel');
+            const isVisible = panel.style.display === 'block';
+            panel.style.display = isVisible ? 'none' : 'block';
+        };
+
+        // --- Feature: Plot Point ---
+        window.plotPoint = function() {
+            const lat = parseFloat(document.getElementById('input-lat').value);
+            const lng = parseFloat(document.getElementById('input-lng').value);
+
+            if (isNaN(lat) || isNaN(lng)) {
+                alert("Masukkan Latitude dan Longitude yang valid.");
+                return;
+            }
+
+            if (plottedPoint) map.removeLayer(plottedPoint);
+
+            plottedPoint = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'custom-marker',
+                    html: '<div style="background-color: #f8fafc; width: 12px; height: 12px; border: 3px solid #ef4444; border-radius: 50%; box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);"></div>',
+                    iconSize: [18, 18],
+                    iconAnchor: [9, 9]
+                })
+            }).addTo(map);
+
+            plottedPoint.bindPopup(`
+                <div class="popup-header">Titik Plot</div>
+                <div class="popup-body">
+                    <div class="popup-row">
+                        <span class="popup-label">Lat</span>
+                        <span class="popup-value">${lat.toFixed(6)}</span>
+                    </div>
+                    <div class="popup-row">
+                        <span class="popup-label">Lng</span>
+                        <span class="popup-value">${lng.toFixed(6)}</span>
+                    </div>
+                </div>
+            `).openPopup();
+
+            map.setView([lat, lng], 8);
+        };
+
         // --- Styling functions ---
         const sesarStyle = { color: "#ef4444", weight: 3, opacity: 0.8 };
         const subduksiStyle = { color: "#3b82f6", weight: 4, opacity: 0.9 };
+
+        function getSlabStyle(feature) {
+            const depth = feature.properties.depth;
+            let color = "#3b82f6"; // Default blue
+            if (depth < 100) color = "#ef4444"; // Red
+            else if (depth < 200) color = "#facc15"; // Yellow
+            else if (depth < 500) color = "#4ade80"; // Green
+            
+            return {
+                color: color,
+                weight: 1, // Thinner lines
+                opacity: 0.6
+            };
+        }
 
         function formatVal(val) {
             if (val === null || val === undefined || val === '') return '-';
@@ -427,6 +727,8 @@
             
             const fields = p.trenchname ? 
                 [['Trench Name', p.trenchname], ['Remarks', p.remarks]] :
+                p.depth !== undefined ?
+                [['Depth (km)', p.depth], ['Region', p.region]] :
                 [['Name', p.name], ['Segment', p.segment], ['Region', p.region], ['Type', p.type], ['Sliprate (mm/yr)', p.sliprate_m], ['Length (km)', p.length_km], ['Mmax (Mw)', p.mmax]];
 
             fields.forEach(([label, val]) => {
@@ -446,12 +748,16 @@
         }
 
         function onEachFeature(feature, layer) {
-            const displayName = getFormattedName(feature.properties);
-            layer.bindTooltip(displayName, {
-                permanent: true,
-                direction: 'center',
-                className: 'line-label'
-            });
+            const isSlab = feature.properties.depth !== undefined;
+            const displayName = isSlab ? `Depth: ${feature.properties.depth} km` : getFormattedName(feature.properties);
+            
+            if (!isSlab) {
+                layer.bindTooltip(displayName, {
+                    permanent: true,
+                    direction: 'center',
+                    className: 'line-label'
+                });
+            }
 
             layer.bindPopup(createPopup(feature));
             
@@ -470,13 +776,15 @@
         // Fetch Data from static files
         async function loadData() {
             try {
-                const [sesarRes, subduksiRes] = await Promise.all([
+                const [sesarRes, subduksiRes, slabsRes] = await Promise.all([
                     fetch('data/sesar.json'),
-                    fetch('data/subduksi.json')
+                    fetch('data/subduksi.json'),
+                    fetch('data/slabs.json')
                 ]);
 
                 const sesarData = await sesarRes.json();
                 const subduksiData = await subduksiRes.json();
+                const slabsData = await slabsRes.json();
 
                 if (sesarData.features) {
                     const layer = L.geoJSON(sesarData, {
@@ -500,6 +808,18 @@
                         }
                     }).addTo(map);
                     layerControl.addOverlay(layer, "Subduksi");
+                }
+
+                if (slabsData.features) {
+                    const layer = L.geoJSON(slabsData, {
+                        style: getSlabStyle,
+                        onEachFeature: function(f, l) {
+                            l.defaultWeight = 1;
+                            l.defaultOpacity = 0.6;
+                            onEachFeature(f, l);
+                        }
+                    }).addTo(map);
+                    layerControl.addOverlay(layer, "Slab USGS (Contours)");
                 }
 
                 document.getElementById('loader').style.opacity = '0';
